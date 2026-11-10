@@ -22,11 +22,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "DMA2026"
-include(":G1096")
-include(":G1097")
-include(":G1098")
+rootProject.name = "S5"
 include(":G1099")
-include(":DMA02")
-include(":DMA03")
-include(":DMA05")
+

@@ -149,23 +149,72 @@ public class ItemActivity extends AppCompatActivity {
     }
 
     private void saveMovie() {
+        // 1. Title validation
         String title = etTitle.getText().toString().trim();
-        if(title.isEmpty())
+        if(title.isEmpty()) {
             etTitle.setError("Title is mandatory!");
-        Double budget = Double.valueOf(etBudget.getText().toString());
-        String poster = etPoster.getText().toString();
+            return; // Stop execution if empty
+        }
 
+        // 2. Budget validation (prevents crash if empty)
+        double budget = 0;
+        try {
+            budget = Double.parseDouble(etBudget.getText().toString());
+        } catch (NumberFormatException e) {
+            etBudget.setError("Invalid budget!");
+            return;
+        }
+
+        // 3. Date parsing
+        Date releaseDate = null;
+        try {
+            String releaseStr = etRelease.getText().toString().trim();
+            if (!releaseStr.isEmpty()) {
+                releaseDate = dateFormat.parse(releaseStr);
+            } else {
+                etRelease.setError("Release date is required!");
+                return;
+            }
+        } catch (ParseException e) {
+            etRelease.setError("Invalid date format!");
+            return;
+        }
+
+        // 4. Extract remaining UI values
+        String poster = etPoster.getText().toString().trim();
+        String genre = spGenre.getSelectedItem().toString();
+        int duration = sbDuration.getProgress();
+        float rating = rbRating.getRating();
+        boolean watched = swWatched.isChecked();
+        boolean onWatchlist = cbWatchlist.isChecked();
+
+        // 5. Extract RadioGroup selection
+        String approval = "";
+        int selectedApprovalId = rgApproval.getCheckedRadioButtonId();
+        if (selectedApprovalId != -1) {
+            RadioButton selectedRadioButton = findViewById(selectedApprovalId);
+            approval = selectedRadioButton.getText().toString();
+        }
+
+        // 6. Populate the Movie object
         Movie movie = new Movie();
         movie.setTitle(title);
         movie.setBudget(budget);
         movie.setPosterUrl(poster);
-        movie.setGenre(spGenre.getSelectedItem().toString());
-        movie.setDuration(sbDuration.getProgress());
+        movie.setGenre(genre);
+        movie.setDuration(duration);
+        movie.setRelease(releaseDate);
+        movie.setRating(rating);
+        movie.setWatched(watched);
+        movie.setOnWatchlist(onWatchlist);
+        movie.setApproval(approval);
 
+        // 7. Send data back and close activity
         Intent intent = new Intent();
-        intent.putExtra(MainActivity.MOVIE_EXTRA, movie);
-        intent.putExtra(MainActivity.POSITION_EXTRA, position);
+        intent.putExtra("movie", movie);
+        intent.putExtra("position", position);
         setResult(RESULT_OK, intent);
+        finish(); // This closes ItemActivity and returns to MainActivity
     }
 
     private void showReleaseDatePicker() {
