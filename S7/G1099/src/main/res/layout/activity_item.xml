@@ -448,5 +448,17 @@
             app:icon="@android:drawable/ic_menu_save"
             app:iconGravity="textStart" />
 
+        <!-- Clear Form -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnClearForm"
+            style="@style/Widget.Material3.Button"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Clear Form"
+            android:textAppearance="?attr/textAppearanceLabelLarge"
+            app:cornerRadius="30dp"
+            app:icon="@android:drawable/ic_menu_revert"
+            app:iconGravity="textStart" />
+
     </LinearLayout>
 </ScrollView>

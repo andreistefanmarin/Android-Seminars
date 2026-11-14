@@ -51,6 +51,7 @@ public class ItemActivity extends AppCompatActivity {
     private MaterialSwitch swWatched;
     private EditText etPoster;
     private Button btMovieAction;
+    private Button btClearForm;
     private TextView tvDurationValue;
     private TextView tvWatchedValue;
 
@@ -126,6 +127,7 @@ public class ItemActivity extends AppCompatActivity {
         btMovieAction = findViewById(R.id.btnMovieAction);
         tvDurationValue = findViewById(R.id.tvDurationValue);
         tvWatchedValue = findViewById(R.id.tvWatchedValue);
+        btClearForm = findViewById(R.id.btnClearForm);
     }
 
     private void initListeners() {
@@ -140,6 +142,10 @@ public class ItemActivity extends AppCompatActivity {
             public void onClick(View v) {
                 saveMovie();
             }
+        });
+        btClearForm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) { clearMovie(); }
         });
         swWatched.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -163,6 +169,18 @@ public class ItemActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void clearMovie() {
+        etTitle.setText("");
+        etRelease.setText("");
+        etBudget.setText("0");
+        sbDuration.setProgress(0);
+        cbonWatchList.setChecked(false);
+        rbRating.setRating(0);
+        etPoster.setText("");
+        swWatched.setChecked(false);
+        rgApproval.check(R.id.rbGeneral);
     }
 
     private void saveMovie() {
