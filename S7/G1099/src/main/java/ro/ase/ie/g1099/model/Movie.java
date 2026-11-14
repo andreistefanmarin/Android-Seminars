@@ -125,4 +125,6 @@ public class Movie implements Serializable {
     public void setPosterUrl(String posterUrl) {
         this.posterUrl = posterUrl;
     }
+
+
 }

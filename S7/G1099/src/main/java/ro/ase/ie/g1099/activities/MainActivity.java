@@ -107,11 +107,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.IMov
     }
 
     private void initControls() {
+
         fabInsert = findViewById(R.id.floatingActionButton);
 //         listView = findViewById(R.id.listView);
 //         listView.setAdapter(movieAdapter);
         recyclerView = findViewById(R.id.rvMovies);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new androidx.recyclerview.widget.GridLayoutManager(this, 2));
         recyclerView.setAdapter(movieAdapter);
 
     }

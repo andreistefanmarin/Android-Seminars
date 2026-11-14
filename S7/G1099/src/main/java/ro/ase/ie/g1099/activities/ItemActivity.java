@@ -146,6 +146,7 @@ public class ItemActivity extends AppCompatActivity {
                 tvWatchedValue.setText(isChecked ? "Yes" : "No");
             }
         });
+
         sbDuration.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
