@@ -42,7 +42,7 @@ public class ItemActivity extends AppCompatActivity {
 
     private EditText etTitle;
     private EditText etRelease;
-    private Spinner spGenre;
+    private EditText etGenre;
     private EditText etBudget;
     private SeekBar sbDuration;
     private RatingBar rbRating;
@@ -86,6 +86,7 @@ public class ItemActivity extends AppCompatActivity {
 
     private void fillForm(Movie existing) {
         etTitle.setText(existing.getTitle());
+        etGenre.setText(existing.getGenre());
         etRelease.setText(dateFormat.format(existing.getRelease()));
         etBudget.setText(String.valueOf(existing.getBudget()));
         sbDuration.setProgress(existing.getDuration());
@@ -93,14 +94,6 @@ public class ItemActivity extends AppCompatActivity {
         swWatched.setChecked(existing.isWatched());
         rbRating.setRating(existing.getRating());
         etPoster.setText(existing.getPosterUrl());
-        for(int index=0; index<spGenre.getCount(); index++)
-        {
-            if(spGenre.getItemAtPosition(index).equals(existing.getGenre()))
-            {
-                spGenre.setSelection(index);
-                break;
-            }
-        }
         for(int index=0; index<rgApproval.getChildCount(); index++)
         {
             RadioButton rb = (RadioButton) rgApproval.getChildAt(index);
@@ -116,7 +109,7 @@ public class ItemActivity extends AppCompatActivity {
 
         etTitle = findViewById(R.id.etTitle);
         etRelease = findViewById(R.id.etRelease);
-        spGenre = findViewById(R.id.spGenre);
+        etGenre = findViewById(R.id.etGenre);
         etBudget = findViewById(R.id.etBudget);
         sbDuration = findViewById(R.id.sbDuration);
         rbRating = findViewById(R.id.rbRating);
@@ -175,6 +168,7 @@ public class ItemActivity extends AppCompatActivity {
         etTitle.setText("");
         etRelease.setText("");
         etBudget.setText("0");
+        etGenre.setText("");
         sbDuration.setProgress(0);
         cbonWatchList.setChecked(false);
         rbRating.setRating(0);
@@ -187,7 +181,7 @@ public class ItemActivity extends AppCompatActivity {
         Movie movie = new Movie();
         movie.setTitle(etTitle.getText().toString());
         movie.setRelease(releaseCal.getTime());
-        movie.setGenre(spGenre.getSelectedItem().toString());
+        movie.setGenre(etGenre.getText().toString());
         movie.setBudget(Double.parseDouble(etBudget.getText().toString()));
         movie.setDuration(sbDuration.getProgress());
         movie.setRating(rbRating.getRating());

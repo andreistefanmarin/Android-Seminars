@@ -102,13 +102,20 @@
                     app:cardCornerRadius="4dp"
                     app:strokeColor="?attr/colorOutline">
 
-                    <Spinner
-                        android:id="@+id/spGenre"
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:entries="@array/movie_genre"
-                        android:paddingStart="4dp"
-                        android:spinnerMode="dropdown" />
+                        android:layout_height="wrap_content"
+                        app:hintEnabled="true"
+                        app:startIconContentDescription="Genre">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etGenre"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Type Genre"
+                            android:inputType="text" />
+                    </com.google.android.material.textfield.TextInputLayout>
                 </com.google.android.material.card.MaterialCardView>
 
                 <!-- Release date -->
