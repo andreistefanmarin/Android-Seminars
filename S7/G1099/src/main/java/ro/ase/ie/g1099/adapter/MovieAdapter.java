@@ -58,6 +58,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         holder.chipApproval.setText(movie.getApproval());
         holder.chipWatched.setVisibility(movie.isWatched() ? View.VISIBLE : View.GONE);
         holder.chipWatchList.setVisibility(movie.isOnWatchlist() ? View.VISIBLE : View.GONE);
+        holder.ivWatchlistHeart.setImageResource(
+                movie.isOnWatchlist() ? android.R.drawable.btn_star_big_on : android.R.drawable.btn_star_big_off);
     }
 
     @Override
@@ -75,6 +77,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         final Chip chipApproval;
         final Chip chipWatched;
         final Chip chipWatchList;
+        final ImageView ivWatchlistHeart;
 
         public MovieViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -87,6 +90,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             chipApproval = itemView.findViewById(R.id.chipApproval);
             chipWatched= itemView.findViewById(R.id.chipWatched);
             chipWatchList = itemView.findViewById(R.id.chipWatchlist);
+            ivWatchlistHeart = itemView.findViewById(R.id.ivWatchlistHeart);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -96,6 +100,16 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                         Movie movie = movies.get(pos);
                         listener.onMovieClick(movie,pos);
                     }
+                }
+            });
+
+            ivWatchlistHeart.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = getAbsoluteAdapterPosition();
+                    Movie movie = movies.get(pos);
+                    movie.setOnWatchlist(!movie.isOnWatchlist());
+                    notifyItemChanged(pos);
                 }
             });
         }

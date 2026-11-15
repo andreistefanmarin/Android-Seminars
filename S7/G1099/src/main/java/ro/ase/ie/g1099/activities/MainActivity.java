@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.IMov
     protected static final String MOVIE_EXTRA = "movie";
     private FloatingActionButton fabInsert;
     // private ListView listView;
+    private FloatingActionButton fabStats;
     private RecyclerView recyclerView;
     private ActivityResultLauncher<Intent> launcher;
     private final ArrayList<Movie> movies = new ArrayList<>();
@@ -95,6 +96,15 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.IMov
             }
         });
 
+        fabStats.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, StatsActivity.class);
+                intent.putExtra("movies_list", movies);
+                startActivity(intent);
+            }
+        });
+
         /* listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -110,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.IMov
         fabInsert = findViewById(R.id.floatingActionButton);
 //         listView = findViewById(R.id.listView);
 //         listView.setAdapter(movieAdapter);
+        fabStats = findViewById(R.id.btnShowStats);
         recyclerView = findViewById(R.id.rvMovies);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(movieAdapter);

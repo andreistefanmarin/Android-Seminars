@@ -43,37 +43,43 @@
             android:layout_marginBottom="16dp"
             app:cardCornerRadius="20dp">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:padding="16dp">
 
                 <TextView
+                    android:id="@+id/tvBasicsHeader"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
                     android:text="Basics"
                     android:textAppearance="?attr/textAppearanceTitleMedium"
-                    android:textColor="?attr/colorPrimary" />
+                    android:textColor="?attr/colorPrimary"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <!-- Title -->
                 <TextView
-                    android:id="@+id/tvTile"
+                    android:id="@+id/tvTileLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="12dp"
                     android:text="Title"
                     android:textAppearance="?attr/textAppearanceLabelLarge"
-                    android:textColor="?attr/colorOnSurfaceVariant" />
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvBasicsHeader" />
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilTitle"
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
+                    app:endIconMode="clear_text"
                     app:hintEnabled="false"
-                    app:endIconMode="clear_text">
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvTileLabel">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etTitle"
@@ -85,21 +91,25 @@
 
                 <!-- Genre -->
                 <TextView
-                    android:id="@+id/tvGenre"
+                    android:id="@+id/tvGenreLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="12dp"
                     android:text="Genre"
                     android:textAppearance="?attr/textAppearanceLabelLarge"
-                    android:textColor="?attr/colorOnSurfaceVariant" />
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tilTitle" />
 
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cvGenre"
                     style="?attr/materialCardViewOutlinedStyle"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:layout_marginBottom="16dp"
                     app:cardBackgroundColor="@android:color/transparent"
                     app:cardCornerRadius="4dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvGenreLabel"
                     app:strokeColor="?attr/colorOutline">
 
                     <Spinner
@@ -113,10 +123,14 @@
 
                 <!-- Release date -->
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilRelease"
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
                     app:hintEnabled="true"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cvGenre"
                     app:startIconContentDescription="Release date"
                     app:startIconDrawable="@android:drawable/ic_menu_my_calendar">
 
@@ -127,7 +141,7 @@
                         android:hint="Release date"
                         android:inputType="date" />
                 </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
 
         <!-- ============ CARD 2: Production ============ -->
@@ -354,43 +368,41 @@
                     android:layout_height="wrap_content"
                     android:scrollbars="none">
 
-                    <RadioGroup
-                        android:id="@+id/rgApproval"
+                    <com.google.android.material.button.MaterialButtonToggleGroup
+                        android:id="@+id/tgApproval"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        app:checkedButton="@id/btnG"
+                        app:singleSelection="true">
 
-                        <com.google.android.material.radiobutton.MaterialRadioButton
-                            android:id="@+id/rbGeneral"
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnG"
+                            style="?attr/materialButtonOutlinedStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:checked="true"
                             android:text="G" />
 
-                        <com.google.android.material.radiobutton.MaterialRadioButton
-                            android:id="@+id/rbParentGuidance"
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnPG"
+                            style="?attr/materialButtonOutlinedStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="PG" />
 
-                        <com.google.android.material.radiobutton.MaterialRadioButton
-                            android:id="@+id/rbPG13"
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnPG13"
+                            style="?attr/materialButtonOutlinedStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="PG-13" />
 
-                        <com.google.android.material.radiobutton.MaterialRadioButton
-                            android:id="@+id/rbRestricted"
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnR"
+                            style="?attr/materialButtonOutlinedStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="R" />
-
-                        <com.google.android.material.radiobutton.MaterialRadioButton
-                            android:id="@+id/rbNC17"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="NC-17" />
-                    </RadioGroup>
+                    </com.google.android.material.button.MaterialButtonToggleGroup>
                 </HorizontalScrollView>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>

@@ -22,4 +22,13 @@
         android:contentDescription="Add"
         app:srcCompat="@drawable/outline_add_24" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnShowStats"
+        android:src="@android:drawable/ic_menu_info_details"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|left"
+        android:layout_margin="16dp"
+        android:contentDescription="Statistics" />
+
 </FrameLayout>

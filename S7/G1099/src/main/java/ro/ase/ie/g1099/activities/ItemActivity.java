@@ -26,6 +26,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -46,7 +47,7 @@ public class ItemActivity extends AppCompatActivity {
     private EditText etBudget;
     private SeekBar sbDuration;
     private RatingBar rbRating;
-    private RadioGroup rgApproval;
+    private MaterialButtonToggleGroup tgApproval;
     private CheckBox cbonWatchList;
     private MaterialSwitch swWatched;
     private EditText etPoster;
@@ -92,20 +93,19 @@ public class ItemActivity extends AppCompatActivity {
         swWatched.setChecked(existing.isWatched());
         rbRating.setRating(existing.getRating());
         etPoster.setText(existing.getPosterUrl());
-        for(int index=0; index<spGenre.getCount(); index++)
-        {
-            if(spGenre.getItemAtPosition(index).equals(existing.getGenre()))
-            {
-                spGenre.setSelection(index);
+
+        for (int i = 0; i < spGenre.getCount(); i++) {
+            if (spGenre.getItemAtPosition(i).toString().equals(existing.getGenre())) {
+                spGenre.setSelection(i);
                 break;
             }
         }
-        for(int index=0; index<rgApproval.getChildCount(); index++)
-        {
-            RadioButton rb = (RadioButton) rgApproval.getChildAt(index);
-            if(rb.getText().toString().equals(existing.getApproval()))
-            {
-                rgApproval.check(rgApproval.getChildAt(index).getId());
+
+        for (int index = 0; index < tgApproval.getChildCount(); index++) {
+            com.google.android.material.button.MaterialButton btn =
+                    (com.google.android.material.button.MaterialButton) tgApproval.getChildAt(index);
+            if (btn.getText().toString().equals(existing.getApproval())) {
+                tgApproval.check(btn.getId());
                 break;
             }
         }
@@ -119,7 +119,7 @@ public class ItemActivity extends AppCompatActivity {
         etBudget = findViewById(R.id.etBudget);
         sbDuration = findViewById(R.id.sbDuration);
         rbRating = findViewById(R.id.rbRating);
-        rgApproval = findViewById(R.id.rgApproval);
+        tgApproval = findViewById(R.id.tgApproval);
         cbonWatchList = findViewById(R.id.cbOnWatchList);
         swWatched = findViewById(R.id.swWatched);
         etPoster = findViewById(R.id.etPoster);
@@ -169,22 +169,20 @@ public class ItemActivity extends AppCompatActivity {
         Movie movie = new Movie();
         movie.setTitle(etTitle.getText().toString());
         movie.setRelease(releaseCal.getTime());
-        movie.setGenre(spGenre.getSelectedItem().toString());
+        movie.setGenre((String) spGenre.getSelectedItem());
         movie.setBudget(Double.parseDouble(etBudget.getText().toString()));
         movie.setDuration(sbDuration.getProgress());
         movie.setRating(rbRating.getRating());
         movie.setWatched(swWatched.isChecked());
         movie.setOnWatchlist(cbonWatchList.isChecked());
         movie.setPosterUrl(etPoster.getText().toString());
-        for(int index=0; index<rgApproval.getChildCount(); index++)
-        {
-            RadioButton rb = (RadioButton) rgApproval.getChildAt(index);
-            if(rb.isChecked())
-            {
-                movie.setApproval(rb.getText().toString());
-                break;
-            }
+
+        int checkedId = tgApproval.getCheckedButtonId();
+        com.google.android.material.button.MaterialButton checkedButton = findViewById(checkedId);
+        if (checkedButton != null) {
+            movie.setApproval(checkedButton.getText().toString());
         }
+
         Intent intent = new Intent();
         intent.putExtra(MainActivity.MOVIE_EXTRA, movie);
         if (position != -1)
