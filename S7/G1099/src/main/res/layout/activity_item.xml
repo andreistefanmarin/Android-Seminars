@@ -506,5 +506,16 @@
             app:icon="@android:drawable/ic_menu_revert"
             app:iconGravity="textStart" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnShare"
+            style="@style/Widget.Material3.Button"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Share"
+            android:textAppearance="?attr/textAppearanceLabelLarge"
+            app:cornerRadius="30dp"
+            app:icon="@android:drawable/ic_menu_share"
+            app:iconGravity="textStart" />
+
     </LinearLayout>
 </ScrollView>

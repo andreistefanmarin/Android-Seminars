@@ -56,6 +56,8 @@ public class ItemActivity extends AppCompatActivity {
     private TextView tvDurationValue;
     private TextView tvWatchedValue;
 
+    private Button btShare;
+
 
 
     private int position = -1;   // -1 = insert mode
@@ -126,6 +128,7 @@ public class ItemActivity extends AppCompatActivity {
         tvWatchedValue = findViewById(R.id.tvWatchedValue);
         btClearForm = findViewById(R.id.btnClearForm);
         etDirector = findViewById(R.id.etDirector);
+        btShare = findViewById(R.id.btnShare);
     }
 
     private void initListeners() {
@@ -144,6 +147,12 @@ public class ItemActivity extends AppCompatActivity {
         btClearForm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) { clearMovie(); }
+        });
+        btShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareMovie();
+            }
         });
         swWatched.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -168,6 +177,18 @@ public class ItemActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void shareMovie() {
+        String title = etTitle.getText().toString().trim();
+        String genre = etGenre.getText().toString().trim();
+        float rating = rbRating.getRating();
+
+        String movieString = "Check out " + title + ", a " + genre + " movie rated " + rating + "/5 stars!";
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, movieString);
+        startActivity(Intent.createChooser(intent, "Share movie via"));
     }
 
     private void clearMovie() {

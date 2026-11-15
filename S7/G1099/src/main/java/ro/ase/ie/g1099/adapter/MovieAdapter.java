@@ -1,5 +1,6 @@
 package ro.ase.ie.g1099.adapter;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,8 +52,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy", java.util.Locale.getDefault());
         String year = movie.getRelease() != null ? sdf.format(movie.getRelease()) : "N/A";
         holder.subtitle.setText(movie.getGenre() + " · " + year);
+        double budget = movie.getBudget();
+        if(budget>100000000) {
+            holder.facts.setTextColor(Color.RED);
+        } else if (budget < 10000000) {
+            holder.facts.setTextColor(Color.parseColor("#4CAF50"));
+        } else {
+            holder.facts.setTextColor(Color.parseColor("#9E9E9E"));
+        }
 
-        holder.facts.setText(movie.getDuration() + " min  ·  $" + movie.getBudget());
+        String formattedBudget = String.format(java.util.Locale.US, "$%,.0f", movie.getBudget());
+        holder.facts.setText(movie.getDuration() + " min  ·  " + formattedBudget);
 
         holder.rating.setRating(movie.getRating());
         holder.ratingValue.setText(String.valueOf(movie.getRating()));
