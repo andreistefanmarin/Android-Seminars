@@ -8,6 +8,16 @@
     android:orientation="horizontal"
     tools:context=".activities.MainActivity">
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnSortByRatings"
+        android:src="@android:drawable/ic_menu_sort_by_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_margin="16dp"
+        android:contentDescription="Sort by ratings"
+        android:clickable="true" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvMovies"
         android:layout_width="match_parent"

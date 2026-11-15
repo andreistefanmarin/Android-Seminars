@@ -40,6 +40,16 @@
                 android:ellipsize="end" />
 
             <TextView
+                android:id="@+id/directorName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Director name"
+                android:textSize="14sp"
+                android:textStyle="italic"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+            <TextView
                 android:id="@+id/movieSubtitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -88,8 +98,7 @@
                 android:id="@+id/movieStatusGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                app:singleLine="true">
+                android:layout_marginTop="4dp">
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipApproval"
@@ -123,6 +132,18 @@
                     app:chipMinHeight="24dp"
                     android:textSize="10sp"
                     app:ensureMinTouchTargetSize="false" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipBlockbuster"
+                    style="@style/Widget.Material3.Chip.Suggestion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Blockbuster"
+                    android:clickable="false"
+                    app:chipMinHeight="24dp"
+                    android:textSize="10sp"
+                    app:ensureMinTouchTargetSize="false" />
+
             </com.google.android.material.chip.ChipGroup>
         </LinearLayout>
     </LinearLayout>

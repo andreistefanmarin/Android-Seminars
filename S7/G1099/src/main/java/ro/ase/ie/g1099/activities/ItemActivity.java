@@ -41,6 +41,7 @@ import ro.ase.ie.g1099.model.Movie;
 public class ItemActivity extends AppCompatActivity {
 
     private EditText etTitle;
+    private EditText etDirector;
     private EditText etRelease;
     private EditText etGenre;
     private EditText etBudget;
@@ -54,6 +55,8 @@ public class ItemActivity extends AppCompatActivity {
     private Button btClearForm;
     private TextView tvDurationValue;
     private TextView tvWatchedValue;
+
+
 
     private int position = -1;   // -1 = insert mode
     private Calendar releaseCal = Calendar.getInstance();
@@ -94,6 +97,7 @@ public class ItemActivity extends AppCompatActivity {
         swWatched.setChecked(existing.isWatched());
         rbRating.setRating(existing.getRating());
         etPoster.setText(existing.getPosterUrl());
+        etDirector.setText(existing.getDirector());
         for(int index=0; index<rgApproval.getChildCount(); index++)
         {
             RadioButton rb = (RadioButton) rgApproval.getChildAt(index);
@@ -121,6 +125,7 @@ public class ItemActivity extends AppCompatActivity {
         tvDurationValue = findViewById(R.id.tvDurationValue);
         tvWatchedValue = findViewById(R.id.tvWatchedValue);
         btClearForm = findViewById(R.id.btnClearForm);
+        etDirector = findViewById(R.id.etDirector);
     }
 
     private void initListeners() {
@@ -168,6 +173,7 @@ public class ItemActivity extends AppCompatActivity {
     private void clearMovie() {
         etTitle.setText("");
         etRelease.setText("");
+        etDirector.setText("");
         etBudget.setText("0");
         etGenre.setText("");
         sbDuration.setProgress(0);
@@ -179,16 +185,33 @@ public class ItemActivity extends AppCompatActivity {
     }
 
     private void saveMovie() {
+        String titleInput = etTitle.getText().toString().trim();
+        String budgetInput = etBudget.getText().toString().trim();
+
+        if(titleInput.isEmpty()) {
+            etTitle.setError("Title is required");
+            etTitle.requestFocus();
+            return;
+        }
+
+        if (budgetInput.isEmpty()) {
+            etBudget.setError("Budget is required");
+            etBudget.requestFocus();
+            return;
+        }
+
         Movie movie = new Movie();
         movie.setTitle(etTitle.getText().toString());
         movie.setRelease(releaseCal.getTime());
         movie.setGenre(etGenre.getText().toString());
-        movie.setBudget(Double.parseDouble(etBudget.getText().toString()));
+        movie.setBudget(Double.parseDouble(budgetInput));
         movie.setDuration(sbDuration.getProgress());
         movie.setRating(rbRating.getRating());
         movie.setWatched(swWatched.isChecked());
         movie.setOnWatchlist(cbonWatchList.isChecked());
         movie.setPosterUrl(etPoster.getText().toString());
+        movie.setDirector(etDirector.getText().toString());
+
         for(int index=0; index<rgApproval.getChildCount(); index++)
         {
             RadioButton rb = (RadioButton) rgApproval.getChildAt(index);

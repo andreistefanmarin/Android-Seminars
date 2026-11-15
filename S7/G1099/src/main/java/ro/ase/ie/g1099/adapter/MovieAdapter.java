@@ -21,6 +21,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     public interface IMovieListener
     {
         void onMovieClick(Movie movie, int position);
+        void onMovieLongClick(int position);
     }
 
     final ArrayList<Movie> movies;
@@ -45,6 +46,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         Movie movie = movies.get(position);
 
         holder.title.setText(movie.getTitle());
+        holder.director.setText(movie.getDirector());
 
         java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy", java.util.Locale.getDefault());
         String year = movie.getRelease() != null ? sdf.format(movie.getRelease()) : "N/A";
@@ -58,6 +60,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         holder.chipApproval.setText(movie.getApproval());
         holder.chipWatched.setVisibility(movie.isWatched() ? View.VISIBLE : View.GONE);
         holder.chipWatchList.setVisibility(movie.isOnWatchlist() ? View.VISIBLE : View.GONE);
+        holder.chipBlockbuster.setVisibility(movie.getBudget() > 100000000 ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -67,6 +70,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     public class MovieViewHolder extends RecyclerView.ViewHolder {
         final ImageView poster;
+        final TextView director;
         final TextView title;
         final TextView subtitle;
         final RatingBar rating;
@@ -75,6 +79,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         final Chip chipApproval;
         final Chip chipWatched;
         final Chip chipWatchList;
+        final Chip chipBlockbuster;
+
 
         public MovieViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -87,6 +93,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             chipApproval = itemView.findViewById(R.id.chipApproval);
             chipWatched= itemView.findViewById(R.id.chipWatched);
             chipWatchList = itemView.findViewById(R.id.chipWatchlist);
+            chipBlockbuster = itemView.findViewById(R.id.chipBlockbuster);
+            director = itemView.findViewById(R.id.directorName);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -96,6 +104,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                         Movie movie = movies.get(pos);
                         listener.onMovieClick(movie,pos);
                     }
+                }
+            });
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    int pos = getAbsoluteAdapterPosition();
+                    if (pos != RecyclerView.NO_POSITION) {
+                        listener.onMovieLongClick(pos);
+                    }
+                    return true;
                 }
             });
         }

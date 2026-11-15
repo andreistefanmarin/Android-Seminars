@@ -15,11 +15,15 @@ public class Movie implements Serializable {
     private boolean onWatchlist; //Checkbox
     private String posterUrl;
 
+    private String director;
+
+
     public Movie() {
     }
 
-    public Movie(String title, Date release, String genre, double budget, int duration, float rating, boolean watched, String approval, boolean onWatchlist, String posterUrl) {
+    public Movie(String title, String director, Date release, String genre, double budget, int duration, float rating, boolean watched, String approval, boolean onWatchlist, String posterUrl) {
         this.title = title;
+        this.director = director;
         this.release = release;
         this.genre = genre;
         this.budget = budget;
@@ -35,6 +39,7 @@ public class Movie implements Serializable {
     public String toString() {
         return "Movie{" +
                 "title='" + title + '\'' +
+                "director='" + director + '\'' +
                 ", release=" + release +
                 ", genre='" + genre + '\'' +
                 ", budget=" + budget +
@@ -126,5 +131,11 @@ public class Movie implements Serializable {
         this.posterUrl = posterUrl;
     }
 
+    public String getDirector() {
+        return director;
+    }
 
+    public void setDirector(String director) {
+        this.director = director;
+    }
 }

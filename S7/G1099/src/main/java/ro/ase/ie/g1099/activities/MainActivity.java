@@ -24,6 +24,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -37,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.IMov
     protected static final String POSITION_EXTRA = "position";
     protected static final String MOVIE_EXTRA = "movie";
     private FloatingActionButton fabInsert;
+
+    private FloatingActionButton fabSort;
     // private ListView listView;
     private RecyclerView recyclerView;
     private ActivityResultLauncher<Intent> launcher;
@@ -95,6 +99,19 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.IMov
             }
         });
 
+        fabSort.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Collections.sort(movies, new Comparator<Movie>() {
+                    @Override
+                    public int compare(Movie m1, Movie m2) {
+                        return Float.compare(m2.getRating(), m1.getRating());
+                    }
+                });
+                movieAdapter.notifyDataSetChanged();
+            }
+        });
+
         /* listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -109,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.IMov
     private void initControls() {
 
         fabInsert = findViewById(R.id.floatingActionButton);
+        fabSort = findViewById(R.id.btnSortByRatings);
 //         listView = findViewById(R.id.listView);
 //         listView.setAdapter(movieAdapter);
         recyclerView = findViewById(R.id.rvMovies);
@@ -120,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.IMov
     private void addSampleMovies() {
         movies.add(new Movie(
                 "Inception",
+                "John Doe",
                 new GregorianCalendar(2010, Calendar.JULY, 16).getTime(),
                 "Sci-Fi",
                 160000000,
@@ -132,6 +151,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.IMov
 
         movies.add(new Movie(
                 "Toy Story",
+                "Anna Brick",
                 new GregorianCalendar(1995, Calendar.NOVEMBER, 22).getTime(),
                 "Animation",
                 30000000,
@@ -144,6 +164,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.IMov
 
         movies.add(new Movie(
                 "The Matrix",
+                "Michael Michelson",
                 new GregorianCalendar(1999, Calendar.MARCH, 31).getTime(),
                 "Action",
                 63000000,
@@ -161,5 +182,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.IMov
         intent.putExtra(MOVIE_EXTRA, movies.get(position));
         intent.putExtra(POSITION_EXTRA, position);
         launcher.launch(intent);
+    }
+
+    @Override
+    public void onMovieLongClick(int position) {
+        movies.remove(position);
+        movieAdapter.notifyItemRemoved(position);
     }
 }
