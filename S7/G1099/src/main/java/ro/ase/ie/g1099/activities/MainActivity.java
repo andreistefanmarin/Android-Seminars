@@ -1,11 +1,15 @@
 package ro.ase.ie.g1099.activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -42,11 +46,17 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.IMov
 
     private FloatingActionButton fabSort;
     // private ListView listView;
+
+    private FloatingActionButton fabToggle;
+    private boolean isGrid = true; // We start in Grid mode
     private RecyclerView recyclerView;
     private ActivityResultLauncher<Intent> launcher;
     private final ArrayList<Movie> movies = new ArrayList<>();
     //private ArrayAdapter<Movie> movieAdapter;
     private MovieAdapter movieAdapter;
+    private TextView stats;
+
+    private Button btnClearAll;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.IMov
         movieAdapter = new MovieAdapter(movies, this);
         initControls();
         initListeners();
+        updateStats();
 
         launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -75,15 +86,18 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.IMov
                             Intent intent = o.getData();
                             Movie movie = (Movie) intent.getSerializableExtra(MOVIE_EXTRA);
                             int position = intent.getIntExtra(POSITION_EXTRA, -1);
+
                             if(position == -1)
                             {
                                 movies.add(movie);
                                 movieAdapter.notifyDataSetChanged();
+                                updateStats();
                             }
                             else
                             {
                                 movies.set(position, movie);
                                 movieAdapter.notifyDataSetChanged();
+                                updateStats();
                             }
                         }
                     }
@@ -112,6 +126,35 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.IMov
             }
         });
 
+        fabToggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isGrid = !isGrid;
+                if(isGrid) {
+                    recyclerView.setLayoutManager(new androidx.recyclerview.widget.GridLayoutManager(MainActivity.this, 2));
+                } else {
+                    recyclerView.setLayoutManager(new androidx.recyclerview.widget.LinearLayoutManager(MainActivity.this));
+                }
+            }
+        });
+
+        btnClearAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Clear all movies?")
+                        .setMessage("This action cannot be undone")
+                        .setNegativeButton("Cancel", null)
+                        .setPositiveButton("Delete", new android.content.DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                movies.clear();
+                                movieAdapter.notifyDataSetChanged();
+                                updateStats();
+                            }
+                        }).show();
+            }
+        });
         /* listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -129,10 +172,23 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.IMov
         fabSort = findViewById(R.id.btnSortByRatings);
 //         listView = findViewById(R.id.listView);
 //         listView.setAdapter(movieAdapter);
+        fabToggle = findViewById(R.id.btnToggleLayout);
         recyclerView = findViewById(R.id.rvMovies);
         recyclerView.setLayoutManager(new androidx.recyclerview.widget.GridLayoutManager(this, 2));
         recyclerView.setAdapter(movieAdapter);
+        stats = findViewById(R.id.tvStats);
+        btnClearAll = findViewById(R.id.btnClearAll);
 
+    }
+
+    private void updateStats() {
+        int totalMovies = 0;
+        double totalBudget = 0;
+        for(Movie movie : movies) {
+            totalMovies++;
+            totalBudget += movie.getBudget();
+        }
+        stats.setText("Total Movies: " + totalMovies + " | Total Budget: $" + totalBudget);
     }
 
     private void addSampleMovies() {
@@ -188,5 +244,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.IMov
     public void onMovieLongClick(int position) {
         movies.remove(position);
         movieAdapter.notifyItemRemoved(position);
+        updateStats();
     }
 }
