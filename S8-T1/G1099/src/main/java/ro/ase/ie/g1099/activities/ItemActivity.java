@@ -166,11 +166,25 @@ public class ItemActivity extends AppCompatActivity {
     }
 
     private void saveMovie() {
+        String budgetStr = etBudget.getText().toString().trim();
+        if (budgetStr.isEmpty()) {
+            etBudget.setError("Budget is required");
+            etBudget.requestFocus();
+            return;
+        }
+
+        double parsedBudget = Double.parseDouble(budgetStr);
+        if (parsedBudget < 1000) {
+            etBudget.setError("Budget must be at least $1,000");
+            etBudget.requestFocus();
+            return;
+        }
+
         Movie movie = new Movie();
         movie.setTitle(etTitle.getText().toString());
         movie.setRelease(releaseCal.getTime());
         movie.setGenre(spGenre.getSelectedItem().toString());
-        movie.setBudget(Double.parseDouble(etBudget.getText().toString()));
+        movie.setBudget(parsedBudget);
         movie.setDuration(sbDuration.getProgress());
         movie.setRating(rbRating.getRating());
         movie.setWatched(swWatched.isChecked());
@@ -200,10 +214,11 @@ public class ItemActivity extends AppCompatActivity {
                 Date parsed = dateFormat.parse(current);
                 if (parsed != null)
                     releaseCal.setTime(parsed);
-            } catch (ParseException ignored) { }
+            } catch (ParseException ignored) {
+            }
         }
 
-        new DatePickerDialog(
+        DatePickerDialog dialog = new DatePickerDialog(
                 this,
                 new DatePickerDialog.OnDateSetListener() {
                     @Override
@@ -216,6 +231,10 @@ public class ItemActivity extends AppCompatActivity {
                 releaseCal.get(Calendar.YEAR),
                 releaseCal.get(Calendar.MONTH),
                 releaseCal.get(Calendar.DAY_OF_MONTH)
-        ).show();
+        );
+
+        // Prevent selection of future dates
+        dialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+        dialog.show();
     }
 }

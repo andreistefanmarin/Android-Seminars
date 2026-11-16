@@ -2,7 +2,10 @@ package ro.ase.ie.g1099.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResult;
@@ -42,6 +45,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.OnMo
     //    private ArrayAdapter<Movie> movieAdapter;
     private MovieAdapter movieAdapter;
     private MaterialSwitch swLayoutToggle;
+
+    private EditText etSearch;
+    private final List<Movie> allMovies = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +100,32 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.OnMo
             }
         });
 
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                String query = s.toString().toLowerCase().trim();
+                movies.clear();
+
+                if(query.isEmpty()) {
+                    movies.addAll(allMovies);
+                } else {
+                    for(Movie movie: allMovies) {
+                        if(movie.getTitle().toLowerCase().contains(query)) {
+                            movies.add(movie);
+                        }
+                    }
+                }
+
+                movieAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        });
+
        /* listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -104,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.OnMo
     }
 
     private void initControls() {
+        etSearch = findViewById(R.id.etSearch);
         fabInsert = findViewById(R.id.floatingActionButton);
         recyclerView = findViewById(R.id.rvMovies);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -154,6 +187,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.OnMo
                 "R",
                 true,
                 "https://example.com/posters/the-matrix.jpg"));
+        allMovies.addAll(movies);
     }
 
     @Override

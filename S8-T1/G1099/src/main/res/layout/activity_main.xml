@@ -13,12 +13,31 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <!-- The Live Search Bar -->
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            app:endIconMode="clear_text"
+            app:hintEnabled="false"
+            app:startIconDrawable="@android:drawable/ic_menu_search">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etSearch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Search movies..."
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
         <com.google.android.material.materialswitch.MaterialSwitch
             android:id="@+id/swLayoutToggle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:text="Grid View"
             android:textAppearance="?attr/textAppearanceTitleMedium"/>
 
