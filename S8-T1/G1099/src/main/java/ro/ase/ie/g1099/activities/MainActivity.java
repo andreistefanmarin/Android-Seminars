@@ -10,13 +10,17 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.helper.widget.Grid;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.materialswitch.MaterialSwitch;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -37,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.OnMo
     private final List<Movie> movies = new ArrayList<>();
     //    private ArrayAdapter<Movie> movieAdapter;
     private MovieAdapter movieAdapter;
+    private MaterialSwitch swLayoutToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.OnMo
 
             }
         });*/
+
     }
 
     private void initControls() {
@@ -102,6 +108,14 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.OnMo
         recyclerView = findViewById(R.id.rvMovies);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(movieAdapter);
+        swLayoutToggle = findViewById(R.id.swLayoutToggle);
+        swLayoutToggle.setOnCheckedChangeListener( ((buttonView, isChecked) -> {
+            if(isChecked) {
+                recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 2));
+            } else {
+                recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+            }
+        }));
     }
 
     private void addSampleMovies() {
@@ -148,5 +162,16 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.OnMo
         intent.putExtra(MOVIE_EXTRA, movies.get(position));
         intent.putExtra(POSITION_EXTRA, position);
         launcher.launch(intent);
+    }
+
+    @Override
+    public void onMovieLongClick(Movie movie, int position) {
+        movies.remove(position);
+        movieAdapter.notifyItemRemoved(position);
+        Snackbar.make(recyclerView, movie.getTitle() + " deleted", Snackbar.LENGTH_LONG)
+                .setAction("UNDO", v -> {
+                    movies.add(position, movie);
+                    movieAdapter.notifyItemInserted(position);
+        }).show();
     }
 }

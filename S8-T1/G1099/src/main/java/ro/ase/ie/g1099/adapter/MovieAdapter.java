@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.chip.Chip;
+import com.google.android.material.materialswitch.MaterialSwitch;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -25,6 +26,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     /** Optional callbacks so the activity can react to taps. */
     public interface OnMovieListener {
         void onMovieClick(Movie movie, int position);
+        void onMovieLongClick(Movie movie, int position);
     }
 
     private final List<Movie> movies;
@@ -100,6 +102,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                 if (pos != RecyclerView.NO_POSITION && listener != null) {
                     listener.onMovieClick(movies.get(pos), pos);
                 }
+            });
+            v.setOnLongClickListener(longClick -> {
+                int pos = getBindingAdapterPosition();
+                if(pos != RecyclerView.NO_POSITION && listener != null) {
+                    listener.onMovieLongClick(movies.get(pos), pos);
+                    return true;
+                }
+                return false;
             });
         }
     }
