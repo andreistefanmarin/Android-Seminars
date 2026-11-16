@@ -1,5 +1,6 @@
 package ro.ase.ie.g1099.activities;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.media.Rating;
@@ -40,6 +41,11 @@ import ro.ase.ie.g1099.model.Movie;
 
 public class ItemActivity extends AppCompatActivity {
 
+    /* TEST T1 (other group):
+    1) Validate the movie form, in ItemActivity do not save the movie unless the inputs are always valid
+    2) Delete a movie with confirmation and undo (snackbar for deletion, another snackbar for undo)
+     */
+
     private EditText etTitle;
     private EditText etRelease;
     private Spinner spGenre;
@@ -51,6 +57,7 @@ public class ItemActivity extends AppCompatActivity {
     private MaterialSwitch swWatched;
     private EditText etPoster;
     private Button btMovieAction;
+    private Button btDeleteMovie;
     private TextView tvDurationValue;
     private TextView tvWatchedValue;
 
@@ -73,9 +80,12 @@ public class ItemActivity extends AppCompatActivity {
         initControls();
         initListeners();
 
+        btDeleteMovie.setVisibility(View.GONE);
+
         Intent intent = getIntent();
         Movie existing = IntentCompat.getSerializableExtra(intent, MainActivity.MOVIE_EXTRA, Movie.class);
         if (existing != null) {
+            btDeleteMovie.setVisibility(View.VISIBLE);
             position = intent.getIntExtra(MainActivity.POSITION_EXTRA, -1);
             fillForm(existing);
             setTitle("Edit movie");
@@ -124,6 +134,7 @@ public class ItemActivity extends AppCompatActivity {
         swWatched = findViewById(R.id.swWatched);
         etPoster = findViewById(R.id.etPoster);
         btMovieAction = findViewById(R.id.btnMovieAction);
+        btDeleteMovie = findViewById(R.id.btnDeleteMovie);
         tvDurationValue = findViewById(R.id.tvDurationValue);
         tvWatchedValue = findViewById(R.id.tvWatchedValue);
     }
@@ -140,6 +151,23 @@ public class ItemActivity extends AppCompatActivity {
             public void onClick(View v) {
                 saveMovie();
             }
+        });
+        btDeleteMovie.setOnClickListener(v -> {
+            new AlertDialog.Builder(ItemActivity.this)
+                    .setTitle("Delete Movie")
+                    .setMessage("Are you sure you want to delete this movie?")
+                    .setPositiveButton("Yes, Delete", (dialog, which) -> {
+                        Intent intent = new Intent();
+                        intent.putExtra(MainActivity.POSITION_EXTRA, position);
+
+                        Movie existingMovie = IntentCompat.getSerializableExtra(getIntent(), MainActivity.MOVIE_EXTRA, Movie.class);
+                        intent.putExtra(MainActivity.MOVIE_EXTRA, existingMovie);
+
+                        setResult(100, intent);
+                        finish();
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
         });
         swWatched.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -166,6 +194,27 @@ public class ItemActivity extends AppCompatActivity {
     }
 
     private void saveMovie() {
+        String title = etTitle.getText().toString().trim();
+        if(title.isEmpty()) {
+            etTitle.setError("Title is required");
+            etTitle.requestFocus();
+            return;
+        }
+
+        String release = etRelease.getText().toString().trim();
+        if(release.isEmpty()) {
+            etRelease.setError("Release date is required");
+            etTitle.requestFocus();
+            return;
+        }
+
+        String budgetStr = etBudget.getText().toString().trim();
+        if (budgetStr.isEmpty()) {
+            etBudget.setError("Budget is required");
+            etBudget.requestFocus();
+            return;
+        }
+
         Movie movie = new Movie();
         movie.setTitle(etTitle.getText().toString());
         movie.setRelease(releaseCal.getTime());

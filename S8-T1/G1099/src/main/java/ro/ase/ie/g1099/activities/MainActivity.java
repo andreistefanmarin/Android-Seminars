@@ -76,6 +76,30 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.OnMo
                                 movieAdapter.notifyDataSetChanged();
                             }
                         }
+                        else if (o.getResultCode() == 100) {
+                            Intent intent = o.getData();
+                            if (intent != null) {
+                                int position = intent.getIntExtra(POSITION_EXTRA, -1);
+                                Movie deletedMovie = (Movie) intent.getSerializableExtra(MOVIE_EXTRA);
+
+                                if (position != -1 && deletedMovie != null) {
+                                    // 1. Remove the item
+                                    movies.remove(position);
+                                    movieAdapter.notifyItemRemoved(position);
+
+                                    // 2. Show Snackbar with Undo
+                                    com.google.android.material.snackbar.Snackbar.make(
+                                            recyclerView,
+                                            deletedMovie.getTitle() + " deleted",
+                                            com.google.android.material.snackbar.Snackbar.LENGTH_LONG
+                                    ).setAction("UNDO", v -> {
+                                        // 3. Restore the item if clicked
+                                        movies.add(position, deletedMovie);
+                                        movieAdapter.notifyItemInserted(position);
+                                    }).show();
+                                }
+                            }
+                        }
                     }
                 });
     }
