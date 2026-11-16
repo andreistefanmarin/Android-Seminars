@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -24,6 +25,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -44,6 +47,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.IMov
     private final ArrayList<Movie> movies = new ArrayList<>();
     //private ArrayAdapter<Movie> movieAdapter;
     private MovieAdapter movieAdapter;
+    private Spinner spSort;
+    private final ArrayList<Movie> originalMovies = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,12 +81,23 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.IMov
                             if(position == -1)
                             {
                                 movies.add(movie);
+                                originalMovies.add(movie);
                                 movieAdapter.notifyDataSetChanged();
                             }
                             else
                             {
                                 movies.set(position, movie);
                                 movieAdapter.notifyDataSetChanged();
+                            }
+                        }
+                        else if (o.getResultCode() == 100) {
+                            Intent intent = o.getData();
+                            if (intent != null) {
+                                int position = intent.getIntExtra(POSITION_EXTRA, -1);
+                                if (position != -1) {
+                                    movies.remove(position); // Remove from underlying data
+                                    movieAdapter.notifyItemRemoved(position); // Animate UI removal
+                                }
                             }
                         }
                     }
@@ -117,6 +134,42 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.IMov
     }
 
     private void initControls() {
+        spSort = findViewById(R.id.spSort);
+        String[] options = {"As added", "Title A-Z", "Rating (best first)"};
+        ArrayAdapter<String> sortAdapter = new ArrayAdapter<>(this,
+                androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, options);
+        spSort.setAdapter(sortAdapter);
+        spSort.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0) {
+                    movies.clear();
+                    movies.addAll(originalMovies);
+                } else if (position == 1) {
+                    java.util.Collections.sort(movies, new java.util.Comparator<Movie>() {
+                        @Override
+                        public int compare(Movie m1, Movie m2) {
+                            return m1.getTitle().compareToIgnoreCase(m2.getTitle());
+                        }
+                    });
+                } else if (position == 2) {
+                    Collections.sort(movies, new Comparator<Movie>() {
+                        @Override
+                        public int compare(Movie o1, Movie o2) {
+                            return Float.compare(o1.getRating(), o2.getRating());
+                        }
+                    });
+                }
+                movieAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
         fabInsert = findViewById(R.id.floatingActionButton);
 //         listView = findViewById(R.id.listView);
 //         listView.setAdapter(movieAdapter);
@@ -139,6 +192,17 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.IMov
                 "PG-13",
                 false,
                 "https://example.com/posters/inception.jpg"));
+        originalMovies.add(new Movie(
+                "Inception",
+                new GregorianCalendar(2010, Calendar.JULY, 16).getTime(),
+                "Sci-Fi",
+                160000000,
+                148,
+                4.5f,
+                true,
+                "PG-13",
+                false,
+                "https://example.com/posters/inception.jpg"));
 
         movies.add(new Movie(
                 "Toy Story",
@@ -151,8 +215,30 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.IMov
                 "G",
                 false,
                 "https://example.com/posters/toy-story.jpg"));
+        originalMovies.add(new Movie(
+                "Toy Story",
+                new GregorianCalendar(1995, Calendar.NOVEMBER, 22).getTime(),
+                "Animation",
+                30000000,
+                81,
+                4f,
+                true,
+                "G",
+                false,
+                "https://example.com/posters/toy-story.jpg"));
 
         movies.add(new Movie(
+                "The Matrix",
+                new GregorianCalendar(1999, Calendar.MARCH, 31).getTime(),
+                "Action",
+                63000000,
+                136,
+                5f,
+                false,
+                "R",
+                true,
+                "https://example.com/posters/the-matrix.jpg"));
+        originalMovies.add(new Movie(
                 "The Matrix",
                 new GregorianCalendar(1999, Calendar.MARCH, 31).getTime(),
                 "Action",

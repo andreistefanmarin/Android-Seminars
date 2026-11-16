@@ -7,6 +7,7 @@ public class Movie implements Serializable {
     private String title; //EditText
     private Date release; //EditText date
     private String genre; //Spinner
+    private String country;
     private double budget; //EditText number
     private int duration; //SeekBar
     private float rating; //RatingBar
@@ -124,5 +125,13 @@ public class Movie implements Serializable {
 
     public void setPosterUrl(String posterUrl) {
         this.posterUrl = posterUrl;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 }

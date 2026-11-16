@@ -43,6 +43,7 @@ public class ItemActivity extends AppCompatActivity {
 
     private EditText etTitle;
     private EditText etRelease;
+    private EditText etCountry;
     private Spinner spGenre;
     private EditText etBudget;
     private SeekBar sbDuration;
@@ -52,6 +53,8 @@ public class ItemActivity extends AppCompatActivity {
     private MaterialSwitch swWatched;
     private EditText etPoster;
     private Button btMovieAction;
+    private TextView tvBudgetValue;
+    private Button btDeleteMovie;
     private TextView tvDurationValue;
     private TextView tvWatchedValue;
 
@@ -73,10 +76,12 @@ public class ItemActivity extends AppCompatActivity {
 
         initControls();
         initListeners();
+        btDeleteMovie.setVisibility(View.GONE);
 
         Intent intent = getIntent();
         Movie existing = IntentCompat.getSerializableExtra(intent, MainActivity.MOVIE_EXTRA, Movie.class);
         if (existing != null) {
+            btDeleteMovie.setVisibility(View.VISIBLE);
             position = intent.getIntExtra(MainActivity.POSITION_EXTRA, -1);
             fillForm(existing);
             setTitle("Edit movie");
@@ -87,6 +92,7 @@ public class ItemActivity extends AppCompatActivity {
     private void fillForm(Movie existing) {
         etTitle.setText(existing.getTitle());
         etRelease.setText(dateFormat.format(existing.getRelease()));
+        etCountry.setText(existing.getCountry());
         etBudget.setText(String.valueOf(existing.getBudget()));
         sbDuration.setProgress(existing.getDuration());
         cbonWatchList.setChecked(existing.isOnWatchlist());
@@ -115,7 +121,9 @@ public class ItemActivity extends AppCompatActivity {
 
         etTitle = findViewById(R.id.etTitle);
         etRelease = findViewById(R.id.etRelease);
+        etCountry = findViewById(R.id.etCountry);
         spGenre = findViewById(R.id.spGenre);
+        tvBudgetValue = findViewById(R.id.tvBudgetValue);
         etBudget = findViewById(R.id.etBudget);
         sbDuration = findViewById(R.id.sbDuration);
         rbRating = findViewById(R.id.rbRating);
@@ -124,6 +132,7 @@ public class ItemActivity extends AppCompatActivity {
         swWatched = findViewById(R.id.swWatched);
         etPoster = findViewById(R.id.etPoster);
         btMovieAction = findViewById(R.id.btnMovieAction);
+        btDeleteMovie = findViewById(R.id.btnDeleteMovie);
         tvDurationValue = findViewById(R.id.tvDurationValue);
         tvWatchedValue = findViewById(R.id.tvWatchedValue);
     }
@@ -139,6 +148,12 @@ public class ItemActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 saveMovie();
+            }
+        });
+        btDeleteMovie.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteMovie();
             }
         });
         swWatched.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -163,12 +178,55 @@ public class ItemActivity extends AppCompatActivity {
 
             }
         });
+        etBudget.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(android.text.Editable s) {
+                String input = s.toString().trim();
+
+                if (input.isEmpty()) {
+                    tvBudgetValue.setText("$0");
+                    return;
+                }
+
+                try {
+                    double parsed = Double.parseDouble(input);
+                    String formatted = String.format(java.util.Locale.US, "$%,.0f", parsed);
+                    tvBudgetValue.setText(formatted);
+                } catch (NumberFormatException e) {
+                    tvBudgetValue.setText("$0");
+                }
+            }
+        });
+    }
+
+    private void deleteMovie() {
+        Intent intent = new Intent();
+        // MainActivity needs to know WHICH item to delete
+        intent.putExtra(MainActivity.POSITION_EXTRA, position);
+        // 100 is our custom code for "DELETE"
+        setResult(100, intent);
+        finish();
     }
 
     private void saveMovie() {
+        String countryInput = etCountry.getText().toString().trim();
+        if(countryInput.isEmpty()) {
+            etCountry.setError("Country is required to save");
+            etCountry.requestFocus();
+            return;
+        }
         Movie movie = new Movie();
         movie.setTitle(etTitle.getText().toString());
         movie.setRelease(releaseCal.getTime());
+        movie.setCountry(countryInput);
         movie.setGenre((String) spGenre.getSelectedItem());
         movie.setBudget(Double.parseDouble(etBudget.getText().toString()));
         movie.setDuration(sbDuration.getProgress());
